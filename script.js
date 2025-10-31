@@ -24,6 +24,39 @@ let lockBoard = false;
 function initGame() {
     // Write your code here
 
+    // clear the existing game board
+    const gameBoard = document.getElementById("game-board");
+    gameBoard.innerHTML = "";
+    cards = [];
+
+
+
+    // loop through each of the symbols
+    for(let i = 0; i < symbols.length; i++){
+        // create 2 cards per symbol
+        for(let j = 0; j < 2; j++){
+
+            let card = createCard(symbols[i]);
+
+            // add the created card into the cards list
+            cards.push(card);
+
+
+        }
+
+    }
+    // shuffle the cards and then populate the board
+    shuffleArray(cards);
+
+    for(let i = 0; i < cards.length; i++){
+        gameBoard.appendChild(cards[i]);
+    }
+
+
+    
+
+
+
     document.getElementById('restart-btn').addEventListener('click', initGame);
 }
 
@@ -34,6 +67,20 @@ function initGame() {
 */
 function createCard(symbol) {
     // Write your code here
+
+
+    let card = document.createElement("button");
+    card.className = "card";
+    // pass the symbol to the front
+    card.setAttribute("symbol", symbol);
+
+
+    
+    card.addEventListener("click", () => flipCard(card));
+
+    return card;
+
+
 }
 
 /*
@@ -48,6 +95,22 @@ function flipCard(card) {
     // If the board is supposed to be locked or you picked the same card you already picked
     if (lockBoard || card === firstCard) return;
     // Write your code here
+    card.classList.add("flipped");
+
+    if(!firstCard){
+        firstCard = card;
+        // display the symbol using the given attribute
+        firstCard.textContent = firstCard.getAttribute("symbol");
+    } else{
+        secondCard = card;
+        secondCard.textContent = secondCard.getAttribute("symbol");
+        // check if both cards match
+        checkForMatch();
+    }
+
+    
+
+    
 }
 
 /* 
@@ -57,6 +120,14 @@ function flipCard(card) {
 */
 function checkForMatch() {
     // Write your code here
+    let symbol1 = firstCard.getAttribute("symbol");
+    let symbol2 = secondCard.getAttribute("symbol");
+    if(firstCard.getAttribute("symbol") == secondCard.getAttribute("symbol")){
+        disableCards();
+    } else{
+        unflipCards();
+    }
+    
 }
 
 /* 
@@ -66,6 +137,10 @@ function checkForMatch() {
 */
 function disableCards() {
     // Write your code here
+    firstCard.classList.add("matched");
+    secondCard.classList.add("matched");
+
+    resetBoard();
 }
  
 /* ---------------------  Everything under has already been done for you -------------------------- */
